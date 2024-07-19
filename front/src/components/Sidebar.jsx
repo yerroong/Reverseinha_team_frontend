@@ -39,95 +39,110 @@ const UserProfile = styled.div`
 `;
 
 const UserProfileImg = styled.img`
-    background-color: #cdcdcd;
-    width: 55px;
-    height: 55px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
 `;
 
-const UserTitle = styled.div`
-    
+const ProfileName = styled.p`
+    font-size: 20px;
 `;
 
-const UserName = styled.h2`
-    font-size: 18px;
-    margin: unset;
+const MyProfileWidget = styled.div`
+    padding-top: 20px;
 `;
 
-const UserEmail = styled.p`
-    font-size: 14px;
-    color: #777;
-    margin: unset;
-    margin-top: 5px;
+const MyProfileWidgetBtn = styled.button`
+    margin-top: 20px;
+    background-color: var(--preset--color--base-3);
+    padding: 7px 20px;
+    border: none;
+    border-radius: 7px;
+    font-size: 17px;
+    box-shadow: 0px 3px 8px 0 var(--preset--color--base-3);
+    color: var(--preset--color--white);
+    transition: all 0.2s ease;
+
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.08);
+        color: var(--preset--color--white);
+    }
 `;
 
-const UserStats = styled.p`
-    font-size: 18px;
-    margin: unset;
-    margin-top: 30px;
+const MyPostsWidget = styled.div`
+    & ul li {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+
+        & .btn-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            & .update-btn,
+            & .delete-btn {
+                background-color: var(--preset--color--base-3);
+                padding: 4px 10px;
+                border: none;
+                border-radius: 7px;
+                font-size: 14px;
+                box-shadow: 0px 3px 8px 0 var(--preset--color--base-3);
+                color: var(--preset--color--white);
+                transition: all 0.2s ease;
+
+                &:hover {
+                    cursor: pointer;
+                    transform: scale(1.08);
+                    color: var(--preset--color--white);
+                }
+            }
+        }
+    }
 `;
 
-const PostButton = styled.button`
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f5f5f5;
-    cursor: pointer;
-    display: block;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    transform: translate(-20px, -20px);
+const Title = styled.h3`
+    margin: 10px 0 10px;
+    font-size: 20px;
 `;
 
-const PostList = styled.div`
-  margin-top: 20px;
-`;
+const Sidebar = ({ user }) => {
+    const navigate = useNavigate();
 
-const PostItem = styled.div`
-  margin-bottom: 10px;
-  font-size: 15px;
-  & span {
-    font-size: 12px;
-    color: #5B5858;
-  }
-`;
-
-const Sidebar = () => {
-  const navigate = useNavigate();
-  const handleClick = () => {
-    navigate('/posting')
-  };
-
-  const myPosts = [
-    { id: 1, title: '작성한 글 제목 1', date: '24.00.00' },
-    { id: 2, title: '작성한 글 제목 2', date: '24.00.00' },
-    { id: 3, title: '작성한 글 제목 3', date: '24.00.00' },
-  ];
-
-  return (
-    <SidebarContainer>
-      <WidgetWrap className='my-profile-widget'>
-        <UserProfile>
-            <UserProfileImg />
-            <UserTitle>
-                <UserName>닉네임</UserName>
-                <UserEmail>example@gmail.com</UserEmail>
-            </UserTitle>
-        </UserProfile>
-        <UserStats>게시글 작성: 20회</UserStats>
-        <UserStats>댓글 작성: 20회</UserStats>
-        <PostButton onClick={handleClick}>글쓰기</PostButton>
-      </WidgetWrap>
-      <WidgetWrap className='my-posts-widget'>
-        <h3>내가 작성한 글</h3>
-        <PostList>
-            {myPosts.map(post => (
-            <PostItem key={post.id}>{post.title} <br /><span>{post.date}</span></PostItem>
-            ))}
-        </PostList>
-      </WidgetWrap>
-    </SidebarContainer>
-  );
+    return (
+        <SidebarContainer>
+            <WidgetWrap className="my-profile-widget">
+                <UserProfile>
+                    <UserProfileImg src={user.profileImage} alt={user.name} />
+                    <ProfileName>{user.name}</ProfileName>
+                </UserProfile>
+                <MyProfileWidget>
+                    <Title>내 정보</Title>
+                    <MyProfileWidgetBtn onClick={() => navigate(`/profile/${user.id}`)}>프로필 보기</MyProfileWidgetBtn>
+                </MyProfileWidget>
+            </WidgetWrap>
+            <WidgetWrap className="my-posts-widget">
+                <MyPostsWidget>
+                    <Title>내 글 목록</Title>
+                    <ul>
+                        {user.posts.map((post, index) => (
+                            <li key={index}>
+                                <span>{post.title}</span>
+                                <div className="btn-wrap">
+                                    <button className="update-btn" onClick={() => navigate(`/edit/${post.id}`)}>수정</button>
+                                    <button className="delete-btn" onClick={() => navigate(`/delete/${post.id}`)}>삭제</button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </MyPostsWidget>
+            </WidgetWrap>
+        </SidebarContainer>
+    );
 };
 
 export default Sidebar;
